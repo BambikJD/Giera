@@ -23,6 +23,8 @@ int MONEY = 30;
 int moneyLatency = 0;
 int moneyLatencyLimit = 5*animationLatencyLimit;
 int hpBarOffset = 74;
+int endScore = 0;
+
 
 
 //CLASS
@@ -57,7 +59,7 @@ public:
         else if (unitType == 3) {
             unitHp = 40;
             unitMaxHp = 40;
-            range = 500;
+            range = 300;
         }
     }
 
@@ -288,30 +290,25 @@ int main() {
     string MAINFOLDER = "C:/Users/Bartek/Desktop/Giera-master/";
 
     Font font(MAINFOLDER + "Giera/Assets/Canterbury.ttf"); //Zmieniona czcionka
-
+    Music MainThemeS(MAINFOLDER + "Giera/Assets/MainTheme.ogg"); //Muzyka
     string AnimationAllyLink1 = MAINFOLDER + "Giera/Assets/Warrior_Blue.png";
     string AnimationAllyLink2 = MAINFOLDER + "Giera/Assets/Torch_Blue.png";
     string AnimationAllyLink3 = MAINFOLDER + "Giera/Assets/Archer_Blue.png";
-
     string AnimationEnemyLink1 = MAINFOLDER + "Giera/Assets/Warrior_Red.png";
     string AnimationEnemyLink2 = MAINFOLDER + "Giera/Assets/Torch_Red.png";
     string AnimationEnemyLink3 = MAINFOLDER + "Giera/Assets/Archer_Red.png";
-
     string ArrowLinkEnemy = MAINFOLDER + "Giera/Assets/ArrowR.png";
     string ArrowLinkAlly = MAINFOLDER + "Giera/Assets/Arrow.png";
-
     string backgroundLink = MAINFOLDER + "Giera/Assets/background.png";
-
     string playButtonLink = MAINFOLDER + "Giera/Assets/PlayButton.png";
     string heartBaseHP = MAINFOLDER + "Giera/Assets/heart.png";
     string coinLink = MAINFOLDER + "Giera/Assets/MonetaBezTla.png";
+    string menuBackgroundLink = MAINFOLDER + "Giera/Assets/menuBackground.png";
 
-    Music MainThemeS(MAINFOLDER + "Giera/Assets/MainTheme.ogg");
 
     // CZAS
     time_t now;
     time_t before;
-
     time_t nowEnemy1;
     time_t beforeEnemy1;
     time_t nowEnemy2;
@@ -324,58 +321,58 @@ int main() {
     time(&beforeEnemy2);
     time(&beforeEnemy3);
 
-
-    //Zmienne do menu
+    //Teksty
     Text pressEnter(font);
     Text startButton(font);
+    Text endScreen(font);
+    Text endScoreText(font);
+    Text moneyInfo(font);
+    Text allyBaseInfo(font);
+    Text enemyBaseInfo(font);
+    Text title(font);
 
-    //--------------------------------------------------------------- Menu/EndScreen Wlasciwosci ---------------------------------------------------------------------
+    pressEnter.setString("Press Enter to Play");
+    pressEnter.setCharacterSize(40);
+    pressEnter.setFillColor(Color::Black);
+    pressEnter.setPosition({ 800, 680 });
 
-    //Tlo menu
-    Texture MenuBackground(backgroundLink, false, IntRect({ 0, 0 }, { 1920, 1080 }));
-    Sprite MenuBackgroundS(MenuBackground);
+    endScreen.setString("Game Over!");
+    endScreen.setFillColor(Color::Black);
+    endScreen.setCharacterSize(100);
+    endScreen.setPosition({ 640, 300 });
+
+    endScoreText.setFillColor(Color::Black);
+    endScoreText.setCharacterSize(70);
+    endScoreText.setPosition({ 660, 420 });
+
+    title.setFillColor(Color::Black);
+    title.setCharacterSize(150);
+    title.setString("Age of Before");
+    title.setPosition({ 590, 150 });
+
+    moneyInfo.setCharacterSize(50);
+    moneyInfo.setPosition(Vector2f(0, 10));
+
+    allyBaseInfo.setCharacterSize(40);
+    allyBaseInfo.setPosition(Vector2f(70, 665));
+
+    enemyBaseInfo.setCharacterSize(40);
+    enemyBaseInfo.setPosition(Vector2f(1770, 665));
     
-    // MEnu 
-    RectangleShape topInterface(Vector2f(1920, 150));
-    topInterface.setFillColor(Color::Yellow);
+    // Menu 
+    Texture menuBackground(menuBackgroundLink, false, IntRect({ 0,0 }, { 1920, 192 }));
+    Sprite topInterface(menuBackground);
 
     //Przycisk Play
     Texture playButton(playButtonLink, false, IntRect({ 0,0 }, { 1024, 1024 }));
     Sprite playButtonS(playButton);
     playButtonS.setPosition({ 800, 300 });
 
-    //pressEnter
-    pressEnter.setString("Press Enter to Play");
-    pressEnter.setCharacterSize(40);
-    pressEnter.setFillColor(Color::Black);
-    pressEnter.setPosition({ 800, 680 });
-
     //Moneta
     Texture Coin(coinLink, false, IntRect({ 0,0 }, { 136, 214 }));
     Sprite CoinS(Coin);
-    CoinS.setPosition({ 200,0 });
+    CoinS.setPosition({ 300,0 });
     Coin.setSmooth(true);
-
-    //endScreen
-    Text endScreen(font);
-    endScreen.setString("Game Over!");
-    endScreen.setFillColor(Color::Black);
-    endScreen.setCharacterSize(100);
-    endScreen.setPosition({ 640, 300 });
-
-    //Wynik
-    int endScore = 0;
-    Text endScoreText(font);
-    endScoreText.setFillColor(Color::Black);
-    endScoreText.setCharacterSize(70);
-    endScoreText.setPosition({ 660, 420 });
-
-    //Tytul
-    Text title(font);
-    title.setFillColor(Color::Black);
-    title.setCharacterSize(150);
-    title.setString("Age of Before");
-    title.setPosition({ 590, 150 });
 
     //Serce HP bazy Ally
     Texture Heart(heartBaseHP, false, IntRect({ 0,0 }, { 363, 309 }));
@@ -404,56 +401,35 @@ int main() {
     Sprite ArcherBlueMoneyS(ArcherBlueMoneyT);
     Sprite TorchBlueMoneyS(TorchBlueMoneyT);
 
-    WarriorBlueMoneyS.setPosition({ 730, 10 });
-    TorchBlueMoneyS.setPosition({ 860, 6 });
-    ArcherBlueMoneyS.setPosition({ 990, 10 });
+    WarriorBlueMoneyS.setPosition({ 400, 5 });
+    TorchBlueMoneyS.setPosition({ 592, 5 });
+    ArcherBlueMoneyS.setPosition({ 784, 5 });
 
     Text WarriorMoney(font);
-    WarriorMoney.setFillColor(Color::White);
-    WarriorMoney.setString("10");
-    WarriorMoney.setCharacterSize(20);
-    WarriorMoney.setPosition({ 750, 80 });
+    WarriorMoney.setFillColor(Color::Red);
+    WarriorMoney.setString("10     Q");
+    WarriorMoney.setCharacterSize(40);
+    WarriorMoney.setPosition(WarriorBlueMoneyS.getPosition() + Vector2f(20, 10));
 
     Text ArcherMoney(font);
-    ArcherMoney.setFillColor(Color::White);
-    ArcherMoney.setString("25");
-    ArcherMoney.setCharacterSize(20);
-    ArcherMoney.setPosition({ 1010, 80 });
+    ArcherMoney.setFillColor(Color::Red);
+    ArcherMoney.setString("25     W");
+    ArcherMoney.setCharacterSize(40);
+    ArcherMoney.setPosition(TorchBlueMoneyS.getPosition() + Vector2f(20, 10));
 
     Text TorchMoney(font);
-    TorchMoney.setFillColor(Color::White);
-    TorchMoney.setString("20");
-    TorchMoney.setCharacterSize(20);
-    TorchMoney.setPosition({ 880, 80 });
-
-    //Klawisze do wywolywania jednostek
-    Text KlawiszQ(font);
-    KlawiszQ.setFillColor(Color::Red);
-    KlawiszQ.setString("Q");
-    KlawiszQ.setCharacterSize(20);
-    KlawiszQ.setPosition({ 790 - 20, 100 });
-
-    Text KlawiszW(font);
-    KlawiszW.setFillColor(Color::Red);
-    KlawiszW.setString("W");
-    KlawiszW.setCharacterSize(20);
-    KlawiszW.setPosition({ 920 - 20, 100 });
-
-    Text KlawiszA(font);
-    KlawiszA.setFillColor(Color::Red);
-    KlawiszA.setString("E");
-    KlawiszA.setCharacterSize(20);
-    KlawiszA.setPosition({ 1050 - 20, 100 });
+    TorchMoney.setFillColor(Color::Red);
+    TorchMoney.setString("20     E");
+    TorchMoney.setCharacterSize(40);
+    TorchMoney.setPosition(ArcherBlueMoneyS.getPosition() + Vector2f(20, 10));
 
     //------------------------------------------------------- INITIALIZE ----------------------------------------------
+    //Glowne okno gry
     ContextSettings settings;
     settings.antiAliasingLevel = 16;
-
-    //Glowne okno gry
     RenderWindow window(VideoMode({ 1920, 1080 }), "Age of War", Style::Default, State::Fullscreen, settings);
     window.setFramerateLimit(FrameLimit);
 
- 
     vector<Sprite> enemiesS;
     vector<Unit> enemiesU;
     vector<Sprite> alliesS;
@@ -463,25 +439,7 @@ int main() {
     vector<RectangleShape> alliesHp;
     vector<RectangleShape> enemiesHp;
 
-
     //-------------------------------------------------------- LOAD ----------------------------------------------------
-
-
-    // Napis pieniazki
-    Text moneyInfo(font);
-    moneyInfo.setCharacterSize(50);
-    moneyInfo.setPosition(Vector2f(0, 0));
-
-    //Napis AllyBaseHp
-    Text allyBaseInfo(font);
-    allyBaseInfo.setCharacterSize(40);
-    allyBaseInfo.setPosition(Vector2f(70, 665));
-
-    //Napis EnemyBaseHp
-    Text enemyBaseInfo(font);
-    enemyBaseInfo.setCharacterSize(40);
-    enemyBaseInfo.setPosition(Vector2f(1770, 665));
-
     // Tlo
     Texture backgroundTexture(backgroundLink, false, IntRect({ 0, 0 }, { 1920, 1080 }));
     Sprite background(backgroundTexture);
@@ -489,11 +447,9 @@ int main() {
     //Tekstury
     Texture allyArrowTexture;
     Texture enemyArrowTexture;
-
     Texture allyTexture1;
     Texture allyTexture2;
     Texture allyTexture3;
-
     Texture enemyTexture1;
     Texture enemyTexture2;
     Texture enemyTexture3;
@@ -501,22 +457,17 @@ int main() {
     if (allyTexture1.loadFromFile(AnimationAllyLink1));
     if (allyTexture2.loadFromFile(AnimationAllyLink2));
     if (allyTexture3.loadFromFile(AnimationAllyLink3));
-
     if (enemyTexture1.loadFromFile(AnimationEnemyLink1));
     if (enemyTexture2.loadFromFile(AnimationEnemyLink2));
     if (enemyTexture3.loadFromFile(AnimationEnemyLink3));
-
     if (enemyArrowTexture.loadFromFile(ArrowLinkEnemy));
     if (allyArrowTexture.loadFromFile(ArrowLinkAlly));
 
-
     //Music
-
     MainThemeS.play();
     MainThemeS.setLooping(true);
     
     Clock clock;
-
 
     //--------------------------------------------------------- LOAD ----------------------------------------------
     while (window.isOpen()) // GLOWNA PETLA GRY
@@ -549,7 +500,6 @@ int main() {
 
         if (ISMENUOPEN == 1) {
             window.clear(Color::White);
-
             //Rysowanie Menu
             window.draw(background);
             window.draw(title);
@@ -592,7 +542,7 @@ int main() {
 
                 // EVENTY KLAWIATURY -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-                if (Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) { // DODAWANIE SOJUSZNIKOW
+                if (Keyboard::isKeyPressed(Keyboard::Key::Q)) { // DODAWANIE SOJUSZNIKOW
                     time(&now);
                     if (difftime(now, before) > 0.1 && MONEY >= 10) {
                         addUnit(alliesS, alliesU, allyTexture1,alliesHp, 1, 1);
@@ -618,7 +568,6 @@ int main() {
                         MONEY -= 25;
                     }
                 }
-
 
                 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -658,7 +607,6 @@ int main() {
                         }
                     }
 
-                    // ANALOGICZNIE W PETLI DLA PRZECIWNIKOW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! OPIS WYZEJ !!!!!!!!!!!!!!!!!!!!
 
                     for (size_t i = 0; i < enemiesS.size(); i++) { // PETLA PRZECIWNIKOW
                         enemiesHp[i].setPosition(enemiesS[i].getPosition() + Vector2f(hpBarOffset, 10));
@@ -845,11 +793,6 @@ int main() {
                 window.draw(ArcherMoney);
                 window.draw(TorchMoney);
 
-                window.draw(KlawiszQ); //Rysowanie klawiszy dla jednostek
-                window.draw(KlawiszW);
-                window.draw(KlawiszA);
-
-
 
                 for (const auto& sprite : alliesS) {
                     window.draw(sprite); // Rysuj kazdy sojusznik
@@ -879,13 +822,10 @@ int main() {
 
                 //--------------------------------------------------------- DRAW -----------------------------------------------
 
-
-
             }
             //----------------------------------------------------- Warunek dla EndScreen -------------------------------------------------------
 
             else {   // ALLYBASEHP <= 0 \\ ENEMYBASEHP <= 0
-
 
                 //Czas
                 Time elapsedTime = clock.getElapsedTime();
