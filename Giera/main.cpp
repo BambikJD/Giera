@@ -30,14 +30,14 @@ class Unit {
 public:
     int animationLatency = 0;
     int Xindex = 0;
-    int unitHp;
+    int unitHp = NULL;
     int unitDierction;
     int animationFrames = 6;
     int unitType;
-    int attackDamage;
-    int range;
+    int attackDamage = NULL;
+    int range = NULL;
     int currentState = 0;
-    int unitMaxHp;
+    int unitMaxHp = NULL;
 
     Unit(int Direction, int Type) {
         unitDierction = Direction;
@@ -827,14 +827,15 @@ int main() {
                 //Rysowanie skladnikow okna
 
                 window.draw(background);
+
+                window.draw(topInterface);
+
                 window.draw(moneyInfo);
                 window.draw(HeartS);
                 window.draw(HeartSEnemy);
                 window.draw(CoinS);
                 window.draw(allyBaseInfo);
                 window.draw(enemyBaseInfo);
-
-                window.draw(topInterface);
 
                 window.draw(WarriorBlueMoneyS); //Rysowanie postaci
                 window.draw(TorchBlueMoneyS);
