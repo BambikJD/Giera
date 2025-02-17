@@ -30,4 +30,5 @@ void attack(Sprite& objectS, Unit& objectU, Unit& attacked, vector<Sprite>& list
 void attackBase(Sprite& objectS, Unit& objectU, int& Basehp, vector<Sprite> listB, Texture ArrowTexture);
 void idle(Sprite& objectS, Unit& objectU);
 void arrowRain(vector<Sprite>& listb, int i);
-
+bool isColliding(Sprite& object1S, Sprite& object2S, int direction);
+bool isAttacking(Sprite& object1S, Sprite& object2S, Unit& object1U, Unit& object2U);
