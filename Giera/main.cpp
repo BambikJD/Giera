@@ -27,7 +27,8 @@ int moneyLatency = 0;
 int moneyLatencyLimit = 5 * animationLatencyLimit;
 int arrowNumber = 0;
 int ISMENUOPEN = 1;
-int hpBarOffset = 74;
+int hpBarOffsetX = 74;
+int hpBarOffsetY = 35;
 
 
 // ZASOBY
@@ -256,8 +257,9 @@ int main() {
     Texture enemyTexture3(AnimationEnemyLink3);
 
     //Music
-   /* MainThemeS.play();
-    MainThemeS.setLooping(true);*/
+    MainThemeS.play();
+    MainThemeS.setLooping(true);
+
     /*View view2;
 	view2.setSize(Vector2f(1564, 880));
 	view2.setCenter(Vector2f(960, 640));
@@ -506,7 +508,7 @@ int main() {
 
 
                     for (size_t i = 0; i < alliesS.size(); i++) { // PETLA SOJUSZNIKOW
-                        alliesHp[i].setPosition(alliesS[i].getPosition() + Vector2f(-192+hpBarOffset,25));
+                        alliesHp[i].setPosition(alliesS[i].getPosition() + Vector2f(-192+hpBarOffsetX, hpBarOffsetY));
                         if (!empty(enemiesS)) { // GDY SA PRZECIWNICY - Zabezpieczenie przed brakiem przeciwnikow i niesamowicie trudnym do zlokalizowania bledem (error konczacy gre) - po zabiciu przeciwnika, petla iterujaca wychodzila poza rozmiar listy typu wektor
                             if (!isAttacking(alliesS[i], enemiesS[0], alliesU[i], enemiesU[0])) { // GDY NIE JEST W ZASIEGU ATAKU
                                 if (alliesS.size() > 1 && i > 0) { // GDY JEST WIECEJ NIZ 1 SOJUSZNIK
@@ -540,7 +542,7 @@ int main() {
 
 
                     for (size_t i = 0; i < enemiesS.size(); i++) { // PETLA PRZECIWNIKOW
-                        enemiesHp[i].setPosition(enemiesS[i].getPosition() + Vector2f(hpBarOffset, 25));
+                        enemiesHp[i].setPosition(enemiesS[i].getPosition() + Vector2f(hpBarOffsetX, hpBarOffsetY));
                         if (!empty(alliesS)) {
                             if (!isAttacking(enemiesS[i], alliesS[0], enemiesU[i], alliesU[0])) {
                                 if (enemiesS.size() > 1 && i > 0) {
@@ -574,7 +576,7 @@ int main() {
                 else {
                     if (enemiesS.size() == 0) { // GDY TYLKO SOJUSZNIK
                         for (size_t i = 0; i < alliesS.size(); i++) {
-                            alliesHp[i].setPosition(alliesS[i].getPosition() + Vector2f(-192 + hpBarOffset, 25));
+                            alliesHp[i].setPosition(alliesS[i].getPosition() + Vector2f(-192 + hpBarOffsetX, hpBarOffsetY));
                             if (!(alliesS[i].getPosition().x - 1600 + alliesU[i].range >= 0)) {
                                 if (i > 0) {
                                     if (isColliding(alliesS[i], alliesS[i-1], 1)){
@@ -598,10 +600,10 @@ int main() {
                             }
                         }
                     }
-
+              
                     if (alliesS.size() == 0) { // GDY TYLKO PRZECIWNIK
                         for (size_t i = 0; i < enemiesS.size(); i++) {
-                            enemiesHp[i].setPosition(enemiesS[i].getPosition() + Vector2f(hpBarOffset, 25));
+                            enemiesHp[i].setPosition(enemiesS[i].getPosition() + Vector2f(hpBarOffsetX, hpBarOffsetY));
                             if (!(320 - enemiesS[i].getPosition().x + enemiesU[i].range >= 0)) {
                                 if (i > 0) {
                                     if (isColliding(enemiesS[i], enemiesS[i-1], -1)) {

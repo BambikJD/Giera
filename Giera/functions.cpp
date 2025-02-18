@@ -15,7 +15,8 @@ extern int ENEMYBASEHP;
 extern int MONEY;
 extern int moneyLatency;
 extern int moneyLatencyLimit;
-extern int hpBarOffset;
+extern int hpBarOffsetX;
+extern int hpBarOffsetY;
 extern int endScore;
 extern int experience;
 
@@ -113,12 +114,6 @@ void addUnit(vector<Sprite>& listS, vector<Unit>& listU, Texture& Texture, vecto
         listU.push_back(Unit(Direction, unitType));
     }
     RectangleShape hpBar({ 44,5 });
-    if (Direction == 1) {
-        hpBar.setPosition(Vector2f(100 + hpBarOffset, 104));
-    }
-    else {
-        hpBar.setPosition(Vector2f(1600 + hpBarOffset, 104));
-    }
     hpBar.setFillColor(Color::Red);
     listHp.push_back(move(hpBar));
 }
