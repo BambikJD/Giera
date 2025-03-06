@@ -15,7 +15,6 @@ using namespace sf;
 
 int frameResolution = 192;
 int FrameLimit = 60;
-int animationLatencyLimit = FrameLimit/14.4;
 int ALLYBASEHP = 500;
 int ENEMYBASEHP = 500;
 int EXPERIENCE = 0;
@@ -23,6 +22,7 @@ int MONEY = 30;
 
 bool isRain = false;
 int moveLatency = 144 / FrameLimit;
+int animationLatencyLimit = FrameLimit / 14.4;
 int moneyLatency = 0;
 int moneyLatencyLimit = 5 * animationLatencyLimit;
 int arrowNumber = 0;
@@ -32,7 +32,7 @@ int hpBarOffsetY = 35;
 
 
 // ZASOBY
-string MAINFOLDER = "C:/Users/Bartek/Desktop/Giera-master/";
+string MAINFOLDER = "F:/Giera-master/";
 
 Font font(MAINFOLDER + "Giera/Assets/Canterbury.ttf"); //Zmieniona czcionka
 Music MainThemeS(MAINFOLDER + "Giera/Assets/MainTheme.ogg"); //Muzyka
@@ -188,33 +188,33 @@ int main() {
     Texture TorchBlueMoneyT(AnimationAllyLink2);
     Texture ArcherBlueMoneyT(AnimationAllyLink3);
 
-    Sprite WarriorBlueMoneyS(WarriorBlueMoneyT); Unit WarriorBlueMoneyU(1,1);
-    Sprite ArcherBlueMoneyS(ArcherBlueMoneyT); Unit ArcherBlueMoneyU(1, 3);
-    Sprite TorchBlueMoneyS(TorchBlueMoneyT); Unit TorchBlueMoneyU(1, 2);
+    Unit WarriorBlueMoneyU(1,1, WarriorBlueMoneyT);
+    Unit ArcherBlueMoneyU(1, 3, ArcherBlueMoneyT);
+    Unit TorchBlueMoneyU(1, 2, TorchBlueMoneyT);
     Sprite ArrowAbility(ArrowRainTexture);
 
-    WarriorBlueMoneyS.setPosition({ 400, 5 });
-    TorchBlueMoneyS.setPosition({ 592, 5 });
-    ArcherBlueMoneyS.setPosition({ 784, 5 });
+    WarriorBlueMoneyU.sprite.setPosition({ 400, 5 });
+    TorchBlueMoneyU.sprite.setPosition({ 592, 5 });
+    ArcherBlueMoneyU.sprite.setPosition({ 784, 5 });
     ArrowAbility.setPosition({ 1400, 45 }); ArrowAbility.setScale({ 1.5,1.5 });
 
     Text WarriorMoney(font);
     WarriorMoney.setFillColor(Color::Red);
     WarriorMoney.setString("10      Q");
     WarriorMoney.setCharacterSize(40);
-    WarriorMoney.setPosition(WarriorBlueMoneyS.getPosition() + Vector2f(20, 10));
+    WarriorMoney.setPosition(WarriorBlueMoneyU.sprite.getPosition() + Vector2f(20, 10));
 
     Text ArcherMoney(font);
     ArcherMoney.setFillColor(Color::Red);
     ArcherMoney.setString("20      W");
     ArcherMoney.setCharacterSize(40);
-    ArcherMoney.setPosition(TorchBlueMoneyS.getPosition() + Vector2f(20, 10));
+    ArcherMoney.setPosition(TorchBlueMoneyU.sprite.getPosition() + Vector2f(20, 10));
 
     Text TorchMoney(font);
     TorchMoney.setFillColor(Color::Red);
     TorchMoney.setString("25      E");
     TorchMoney.setCharacterSize(40); 
-    TorchMoney.setPosition(ArcherBlueMoneyS.getPosition() + Vector2f(20, 10));
+    TorchMoney.setPosition(ArcherBlueMoneyU.sprite.getPosition() + Vector2f(20, 10));
 
     //------------------------------------------------------- INITIALIZE ----------------------------------------------
     //Glowne okno gry
@@ -223,9 +223,7 @@ int main() {
     RenderWindow window(VideoMode({ 1920, 1080 }), "Age of War", Style::Default, State::Fullscreen, settings);
     window.setFramerateLimit(FrameLimit);
 
-    vector<Sprite> enemiesS;
     vector<Unit> enemiesU;
-    vector<Sprite> alliesS;
     vector<Unit> alliesU;
     vector<Sprite> enemiesB;
     vector<Sprite> alliesB;
@@ -293,9 +291,7 @@ int main() {
                     EXPERIENCE = 0;
                     MONEY = 30;
                     moneyLatency = 0;
-                    enemiesS = {};
                     enemiesU = {};
-                    alliesS = {};
                     alliesU = {};
                     enemiesB = {};
                     alliesB = {};
@@ -339,9 +335,7 @@ int main() {
                         EXPERIENCE = 0;
                         MONEY = 30;
                         moneyLatency = 0;
-                        enemiesS = {};
                         enemiesU = {};
-                        alliesS = {};
                         alliesU = {};
                         enemiesB = {};
                         alliesB = {};
@@ -379,24 +373,24 @@ int main() {
 
                 moneyInfo.setString("Money: " + to_string(MONEY)); //Wyswietlanie mamony
 
-                idle(WarriorBlueMoneyS, WarriorBlueMoneyU);
-                idle(TorchBlueMoneyS, TorchBlueMoneyU);
-                idle(ArcherBlueMoneyS, ArcherBlueMoneyU);
+                idle(WarriorBlueMoneyU);
+                idle(TorchBlueMoneyU);
+                idle(ArcherBlueMoneyU);
 
                 // RESPIENIE PRZECIWNIKOW ---------------------------------------------------------------------------------------
                 time(&nowEnemy1);
                 if (difftime(nowEnemy1, beforeEnemy1) > 7) {
-                    addUnit(enemiesS, enemiesU, enemyTexture1,enemiesHp, -1, 1);
+                    addUnit(enemiesU, enemyTexture1,enemiesHp, -1, 1);
                     time(&beforeEnemy1);
                 }
                 time(&nowEnemy2);
                 if (difftime(nowEnemy2, beforeEnemy2) > 17) {
-                    addUnit(enemiesS, enemiesU, enemyTexture2,enemiesHp, -1, 2);
+                    addUnit(enemiesU, enemyTexture2,enemiesHp, -1, 2);
                     time(&beforeEnemy2);
                 }
                 time(&nowEnemy3);
                 if (difftime(nowEnemy3, beforeEnemy3) > 20) {
-                    addUnit(enemiesS, enemiesU, enemyTexture3,enemiesHp, -1, 3);
+                    addUnit(enemiesU, enemyTexture3,enemiesHp, -1, 3);
                     time(&beforeEnemy3);
                 }
 
@@ -428,8 +422,8 @@ int main() {
 
                 if (Mouse::isButtonPressed(sf::Mouse::Button::Left))
                 {
-                    if (Mouse::getPosition().x - WarriorBlueMoneyS.getPosition().x > 0 && Mouse::getPosition().x - WarriorBlueMoneyS.getPosition().x < 192 &&
-                        Mouse::getPosition().y - WarriorBlueMoneyS.getPosition().y > 0 && Mouse::getPosition().y - WarriorBlueMoneyS.getPosition().y < 192) {
+                    if (Mouse::getPosition().x - WarriorBlueMoneyU.sprite.getPosition().x > 0 && Mouse::getPosition().x - WarriorBlueMoneyU.sprite.getPosition().x < 192 &&
+                        Mouse::getPosition().y - WarriorBlueMoneyU.sprite.getPosition().y > 0 && Mouse::getPosition().y - WarriorBlueMoneyU.sprite.getPosition().y < 192) {
                         if (clock.getElapsedTime().asSeconds() > 0.5 && MONEY >= 10 && queueTimes.size() < 5) {
                             queueTimes.push_back(1);
                             clock.restart();
@@ -437,8 +431,8 @@ int main() {
                         }
                     
                     } else 
-                    if (Mouse::getPosition().x - TorchBlueMoneyS.getPosition().x > 0 && Mouse::getPosition().x - TorchBlueMoneyS.getPosition().x < 192 &&
-                        Mouse::getPosition().y - TorchBlueMoneyS.getPosition().y > 0 && Mouse::getPosition().y - TorchBlueMoneyS.getPosition().y < 192) {
+                    if (Mouse::getPosition().x - TorchBlueMoneyU.sprite.getPosition().x > 0 && Mouse::getPosition().x - TorchBlueMoneyU.sprite.getPosition().x < 192 &&
+                        Mouse::getPosition().y - TorchBlueMoneyU.sprite.getPosition().y > 0 && Mouse::getPosition().y - TorchBlueMoneyU.sprite.getPosition().y < 192) {
                         if (clock.getElapsedTime().asSeconds() > 0.5 && MONEY >= 20 && queueTimes.size() < 5) {
                             queueTimes.push_back(2);
                             clock.restart();
@@ -446,8 +440,8 @@ int main() {
                         }
 
                     } else 
-                    if (Mouse::getPosition().x - ArcherBlueMoneyS.getPosition().x > 0 && Mouse::getPosition().x - ArcherBlueMoneyS.getPosition().x < 192 &&
-                        Mouse::getPosition().y - ArcherBlueMoneyS.getPosition().y > 0 && Mouse::getPosition().y - ArcherBlueMoneyS.getPosition().y < 192) {
+                    if (Mouse::getPosition().x - ArcherBlueMoneyU.sprite.getPosition().x > 0 && Mouse::getPosition().x - ArcherBlueMoneyU.sprite.getPosition().x < 192 &&
+                        Mouse::getPosition().y - ArcherBlueMoneyU.sprite.getPosition().y > 0 && Mouse::getPosition().y - ArcherBlueMoneyU.sprite.getPosition().y < 192) {
                         if (clock.getElapsedTime().asSeconds() > 0.5 && MONEY >= 25 && queueTimes.size() < 5) {
                             queueTimes.push_back(3);
                             clock.restart();
@@ -476,13 +470,13 @@ int main() {
                     for (int i = 0; i < queueTimes.size(); i++) {
 						if (queue.getElapsedTime().asSeconds() > 2) {
 							if (queueTimes[i] == 1) {
-								addUnit(alliesS, alliesU, allyTexture1, alliesHp, 1, 1);
+								addUnit(alliesU, allyTexture1, alliesHp, 1, 1);
 							}
 							else if (queueTimes[i] == 2) {
-								addUnit(alliesS, alliesU, allyTexture2, alliesHp, 1, 2);
+								addUnit(alliesU, allyTexture2, alliesHp, 1, 2);
 							}
 							else if (queueTimes[i] == 3) {
-								addUnit(alliesS, alliesU, allyTexture3, alliesHp, 1, 3);
+								addUnit(alliesU, allyTexture3, alliesHp, 1, 3);
 							}
 							queueTimes.erase(queueTimes.begin() + i);
                             queue.restart();
@@ -504,31 +498,30 @@ int main() {
                     }
                 }
 
-                if (enemiesS.size() != 0 && alliesS.size() != 0) { // GDY SA JEDNOCZESNIE SOJUSZNIK I PRZECIWNIK
+                if (enemiesU.size() != 0 && alliesU.size() != 0) { // GDY SA JEDNOCZESNIE SOJUSZNIK I PRZECIWNIK
 
 
-                    for (size_t i = 0; i < alliesS.size(); i++) { // PETLA SOJUSZNIKOW
-                        alliesHp[i].setPosition(alliesS[i].getPosition() + Vector2f(-192+hpBarOffsetX, hpBarOffsetY));
-                        if (!empty(enemiesS)) { // GDY SA PRZECIWNICY - Zabezpieczenie przed brakiem przeciwnikow i niesamowicie trudnym do zlokalizowania bledem (error konczacy gre) - po zabiciu przeciwnika, petla iterujaca wychodzila poza rozmiar listy typu wektor
-                            if (!isAttacking(alliesS[i], enemiesS[0], alliesU[i], enemiesU[0])) { // GDY NIE JEST W ZASIEGU ATAKU
-                                if (alliesS.size() > 1 && i > 0) { // GDY JEST WIECEJ NIZ 1 SOJUSZNIK
-                                    if (isColliding(alliesS[i], alliesS[i-1], 1)) { // GDY NIE JEST W KOLIZJI Z INNYM SOJUSZNIKIEM
-                                        idle(alliesS[i], alliesU[i]); //USTAWIENIE STOJACEJ TEKSTURY
+                    for (size_t i = 0; i < alliesU.size(); i++) { // PETLA SOJUSZNIKOW
+                        alliesHp[i].setPosition(alliesU[i].sprite.getPosition() + Vector2f(-192+hpBarOffsetX, hpBarOffsetY));
+                        if (!empty(enemiesU)) { // GDY SA PRZECIWNICY - Zabezpieczenie przed brakiem przeciwnikow i niesamowicie trudnym do zlokalizowania bledem (error konczacy gre) - po zabiciu przeciwnika, petla iterujaca wychodzila poza rozmiar listy typu wektor
+                            if (!isAttacking(alliesU[i], enemiesU[0])) { // GDY NIE JEST W ZASIEGU ATAKU
+                                if (alliesU.size() > 1 && i > 0) { // GDY JEST WIECEJ NIZ 1 SOJUSZNIK
+                                    if (isColliding(alliesU[i], alliesU[i-1], 1)) { // GDY NIE JEST W KOLIZJI Z INNYM SOJUSZNIKIEM
+                                        idle(alliesU[i]); //USTAWIENIE STOJACEJ TEKSTURY
                                     }
                                     else { // GDY JEST W KOLIZJI Z INNYM SOJUSZNIKIEM
-                                        move(alliesS[i], alliesU[i], 1); // RUCH
+                                        move(alliesU[i], 1); // RUCH
                                     }
                                 }
                                 else { // GDY JEST TYLKO 1 SOJUSZNIK
-                                    move(alliesS[i], alliesU[i], 1); // RUCH
+                                    move(alliesU[i], 1); // RUCH
                                 }
                             }
                             else { // GDY JEST W ZASIEGU ATAKU
-                                attack(alliesS[i], alliesU[i], enemiesU[0], alliesB, allyArrowTexture); // ATAK NA OPONENTA    
+                                attack(alliesU[i], enemiesU[0], alliesB, allyArrowTexture); // ATAK NA OPONENTA    
                                 if (enemiesU[0].unitHp <= 0) { // USUWANIE OPONENTA GDY MA 0 HP
                                     EXPERIENCE += enemiesU[0].unitType * 10;
                                     MONEY += enemiesU[0].unitType * 5;
-                                    enemiesS.erase(enemiesS.begin());
                                     enemiesU.erase(enemiesU.begin());
                                     enemiesHp.erase(enemiesHp.begin());
                                 }
@@ -541,26 +534,25 @@ int main() {
                     }
 
 
-                    for (size_t i = 0; i < enemiesS.size(); i++) { // PETLA PRZECIWNIKOW
-                        enemiesHp[i].setPosition(enemiesS[i].getPosition() + Vector2f(hpBarOffsetX, hpBarOffsetY));
-                        if (!empty(alliesS)) {
-                            if (!isAttacking(enemiesS[i], alliesS[0], enemiesU[i], alliesU[0])) {
-                                if (enemiesS.size() > 1 && i > 0) {
-                                    if (isColliding(enemiesS[i], enemiesS[i-1], -1)) {
-                                        idle(enemiesS[i], enemiesU[i]);
+                    for (size_t i = 0; i < enemiesU.size(); i++) { // PETLA PRZECIWNIKOW
+                        enemiesHp[i].setPosition(enemiesU[i].sprite.getPosition() + Vector2f(hpBarOffsetX, hpBarOffsetY));
+                        if (!empty(alliesU)) {
+                            if (!isAttacking(enemiesU[i], alliesU[0])) {
+                                if (enemiesU.size() > 1 && i > 0) {
+                                    if (isColliding(enemiesU[i], enemiesU[i-1], -1)) {
+                                        idle(enemiesU[i]);
                                     }
                                     else {
-                                        move(enemiesS[i], enemiesU[i], -1);
+                                        move(enemiesU[i], -1);
                                     }
                                 }
                                 else {
-                                    move(enemiesS[i], enemiesU[i], -1);
+                                    move(enemiesU[i], -1);
                                 }
                             }
                             else {
-                                attack(enemiesS[i], enemiesU[i], alliesU[0], enemiesB, enemyArrowTexture);
+                                attack(enemiesU[i], alliesU[0], enemiesB, enemyArrowTexture);
                                 if (alliesU[0].unitHp <= 0) {
-                                    alliesS.erase(alliesS.begin());
                                     alliesU.erase(alliesU.begin());
                                     alliesHp.erase(alliesHp.begin());
 
@@ -574,62 +566,62 @@ int main() {
                     }
                 }
                 else {
-                    if (enemiesS.size() == 0) { // GDY TYLKO SOJUSZNIK
-                        for (size_t i = 0; i < alliesS.size(); i++) {
-                            alliesHp[i].setPosition(alliesS[i].getPosition() + Vector2f(-192 + hpBarOffsetX, hpBarOffsetY));
-                            if (!(alliesS[i].getPosition().x - 1600 + alliesU[i].range >= 0)) {
+                    if (enemiesU.size() == 0) { // GDY TYLKO SOJUSZNIK
+                        for (size_t i = 0; i < alliesU.size(); i++) {
+                            alliesHp[i].setPosition(alliesU[i].sprite.getPosition() + Vector2f(-192 + hpBarOffsetX, hpBarOffsetY));
+                            if (!(alliesU[i].sprite.getPosition().x - 1600 + alliesU[i].range >= 0)) {
                                 if (i > 0) {
-                                    if (isColliding(alliesS[i], alliesS[i-1], 1)){
-                                        idle(alliesS[i], alliesU[i]);
+                                    if (isColliding(alliesU[i], alliesU[i-1], 1)){
+                                        idle(alliesU[i]);
                                     }
                                     else {
-                                        move(alliesS[i], alliesU[i], 1);
+                                        move(alliesU[i], 1);
                                     }
                                 }
                                 else {
-                                    move(alliesS[i], alliesU[i], 1);
+                                    move(alliesU[i], 1);
                                 }
                             }
                             else {
                                 if (alliesU[i].unitType != 3) {
-                                    attackBase(alliesS[i], alliesU[i], ENEMYBASEHP, alliesB, allyArrowTexture);
+                                    attackBase(alliesU[i], ENEMYBASEHP, alliesB, allyArrowTexture);
                                 }
                                 else {
-                                    attack(alliesS[i], alliesU[i], alliesU[i], alliesB, allyArrowTexture);
+                                    attack(alliesU[i], alliesU[i], alliesB, allyArrowTexture);
                                 }
                             }
                         }
                     }
               
-                    if (alliesS.size() == 0) { // GDY TYLKO PRZECIWNIK
-                        for (size_t i = 0; i < enemiesS.size(); i++) {
-                            enemiesHp[i].setPosition(enemiesS[i].getPosition() + Vector2f(hpBarOffsetX, hpBarOffsetY));
-                            if (!(320 - enemiesS[i].getPosition().x + enemiesU[i].range >= 0)) {
+                    if (alliesU.size() == 0) { // GDY TYLKO PRZECIWNIK
+                        for (size_t i = 0; i < enemiesU.size(); i++) {
+                            enemiesHp[i].setPosition(enemiesU[i].sprite.getPosition() + Vector2f(hpBarOffsetX, hpBarOffsetY));
+                            if (!(320 - enemiesU[i].sprite.getPosition().x + enemiesU[i].range >= 0)) {
                                 if (i > 0) {
-                                    if (isColliding(enemiesS[i], enemiesS[i-1], -1)) {
-                                        idle(enemiesS[i], enemiesU[i]);
+                                    if (isColliding(enemiesU[i], enemiesU[i-1], -1)) {
+                                        idle(enemiesU[i]);
                                     }
                                     else {
-                                        move(enemiesS[i], enemiesU[i], -1);
+                                        move(enemiesU[i], -1);
                                     }
                                 }
                                 else {
-                                    move(enemiesS[i], enemiesU[i], -1);
+                                    move(enemiesU[i], -1);
                                 }
                             }
                             else {
                                 if (enemiesU[i].unitType != 3) {
-                                    attackBase(enemiesS[i], enemiesU[i], ALLYBASEHP, enemiesB, enemyArrowTexture);
+                                    attackBase(enemiesU[i], ALLYBASEHP, enemiesB, enemyArrowTexture);
                                 }
                                 else {
-                                    attack(enemiesS[i], enemiesU[i], enemiesU[i], enemiesB, enemyArrowTexture);
+                                    attack(enemiesU[i], enemiesU[i], enemiesB, enemyArrowTexture);
                                 }
                             }
                         }
                     }
                 }
 
-                // Strza≥y 
+                // Strza≈Çy 
                 if (isRain == true) {
                     if (arrowNumber < 15) {
                         if (arrowRainClock.getElapsedTime().asSeconds() > 0.5) {
@@ -648,13 +640,12 @@ int main() {
                     if (!empty(alliesB)) {
                         for (int j = 0; j < 3*moveLatency; j++) {
                             alliesB[i].setPosition(alliesB[i].getPosition() + Vector2f(1, 0));
-                            if (!empty(enemiesS)) {
-                                if (alliesB[i].getPosition().x - enemiesS[0].getPosition().x > 0 && (alliesB[i].getPosition().x - enemiesS[0].getPosition().x < 64)) {
+                            if (!empty(enemiesU)) {
+                                if (alliesB[i].getPosition().x - enemiesU[0].sprite.getPosition().x > 0 && (alliesB[i].getPosition().x - enemiesU[0].sprite.getPosition().x < 64)) {
                                     enemiesU[0].unitHp -= 20;
                                     if (enemiesU[0].unitHp <= 0) { // USUWANIE OPONENTA GDY MA 0 HP
                                         EXPERIENCE += enemiesU[0].unitType * 10;
                                         MONEY += enemiesU[0].unitType * 5;
-                                        enemiesS.erase(enemiesS.begin());
                                         enemiesU.erase(enemiesU.begin());
                                         enemiesHp.erase(enemiesHp.begin());
                                     }else {
@@ -683,15 +674,14 @@ int main() {
                         for (int j = 0; j < 3 * moveLatency; j++) {
                             if (i != -1 && !empty(rain)) {
                                 rain[i].setPosition(rain[i].getPosition() + Vector2f(0, 1));
-                                for (int k = 0; k < enemiesS.size(); k++) {
-                                    if (!empty(enemiesS)) {
-                                        if (rain[i].getPosition().x - enemiesS[k].getPosition().x > 0 && rain[i].getPosition().x - enemiesS[k].getPosition().x < 100 &&
-                                            rain[i].getPosition().y - enemiesS[k].getPosition().y > 0 && rain[i].getPosition().y - enemiesS[k].getPosition().y < 50) {
+                                for (int k = 0; k < enemiesU.size(); k++) {
+                                    if (!empty(enemiesU)) {
+                                        if (rain[i].getPosition().x - enemiesU[k].sprite.getPosition().x > 0 && rain[i].getPosition().x - enemiesU[k].sprite.getPosition().x < 100 &&
+                                            rain[i].getPosition().y - enemiesU[k].sprite.getPosition().y > 0 && rain[i].getPosition().y - enemiesU[k].sprite.getPosition().y < 50) {
                                             enemiesU[k].unitHp -= 100;
                                             if (enemiesU[k].unitHp <= 0) { // USUWANIE OPONENTA GDY MA 0 HP
                                                 EXPERIENCE += enemiesU[k].unitType * 10;
                                                 MONEY += enemiesU[k].unitType * 5;
-                                                enemiesS.erase(enemiesS.begin() + k);
                                                 enemiesU.erase(enemiesU.begin() + k);
                                                 enemiesHp.erase(enemiesHp.begin() + k);
                                                 rain.erase(rain.begin() + i);                                                
@@ -730,11 +720,10 @@ int main() {
                     if (!empty(enemiesB)) {
                         for (int j = 0; j < 3*moveLatency; j++) {
                             enemiesB[i].setPosition(enemiesB[i].getPosition() + Vector2f(-1, 0));
-                            if (!empty(alliesS)) {
-                                if (enemiesB[i].getPosition().x - alliesS[0].getPosition().x < -64 && (enemiesB[i].getPosition().x - alliesS[0].getPosition().x > -128)) {
+                            if (!empty(alliesU)) {
+                                if (enemiesB[i].getPosition().x - alliesU[0].sprite.getPosition().x < -64 && (enemiesB[i].getPosition().x - alliesU[0].sprite.getPosition().x > -128)) {
                                     alliesU[0].unitHp -= 20;
                                     if (alliesU[0].unitHp <= 0) { // USUWANIE OPONENTA GDY MA 0 HP
-                                        alliesS.erase(alliesS.begin());
                                         alliesU.erase(alliesU.begin()); 
                                         alliesHp.erase(alliesHp.begin());
 
@@ -788,9 +777,9 @@ int main() {
                     window.draw(enemyBaseInfo);
                     window.draw(expInfo);
 
-                    window.draw(WarriorBlueMoneyS); //Rysowanie postaci
-                    window.draw(TorchBlueMoneyS);
-                    window.draw(ArcherBlueMoneyS);
+                    window.draw(WarriorBlueMoneyU.sprite); //Rysowanie postaci
+                    window.draw(TorchBlueMoneyU.sprite);
+                    window.draw(ArcherBlueMoneyU.sprite);
 
                     window.draw(WarriorMoney); //Rysowanie Pieniedzy do postaci
                     window.draw(ArcherMoney);
@@ -805,12 +794,12 @@ int main() {
                         window.draw(sprite);
                     }
 
-                    for (const auto& sprite : alliesS) {
-                        window.draw(sprite); // Rysuj kazdy sojusznik
+                    for (const auto& unit : alliesU) {
+                        window.draw(unit.sprite); // Rysuj kazdy sojusznik
                     }
 
-                    for (const auto& sprite : enemiesS) {
-                        window.draw(sprite); // Rysuj kazdy oponent
+                    for (const auto& unit : enemiesU) {
+                        window.draw(unit.sprite); // Rysuj kazdy oponent
                     }
 
                     for (const auto& sprite : alliesB) {
