@@ -23,9 +23,10 @@ extern int experience;
 extern Sound swordSound;
 extern Texture ArrowRainTexture;
 
-Unit::Unit(int Direction, int Type) {
+Unit::Unit(int Direction, int Type, Texture& textureNew) {
     unitDierction = Direction;
     unitType = Type;
+	sprite.setTexture(textureNew);
     if (unitType == 1) {
         unitHp = 100;
         unitMaxHp = 100;
@@ -53,15 +54,15 @@ void endMenu(RenderWindow& window, Text& endScreen, Text& endScoreText, Text& pr
     window.display();
 }
 
-void move(Sprite& objectS, Unit& objectU, int direc) {
+void move(Unit& objectU, int direc) {
     if (objectU.currentState != 1) {
         objectU.Xindex = 0;
     }
     objectU.currentState = 1;
     for (int i = 0; i < moveLatency; i++) {
-        objectS.setPosition(objectS.getPosition() + Vector2f(direc * 1, 0));
+        objectU.sprite.setPosition(objectU.sprite.getPosition() + Vector2f(direc * 1, 0));
     }
-    objectS.setTextureRect(IntRect({ objectU.Xindex * frameResolution,frameResolution }, { frameResolution,frameResolution }));
+    objectU.sprite.setTextureRect(IntRect({ objectU.Xindex * frameResolution,frameResolution }, { frameResolution,frameResolution }));
     objectU.animationLatency += 1;
     if (objectU.animationLatency >= animationLatencyLimit) {
         objectU.Xindex += 1;
@@ -73,61 +74,56 @@ void move(Sprite& objectS, Unit& objectU, int direc) {
     
 }
 
-void addUnit(vector<Sprite>& listS, vector<Unit>& listU, Texture& Texture, vector<RectangleShape>& listHp, int Direction, int unitType) {
+void addUnit(vector<Unit>& listU, Texture& Texture, vector<RectangleShape>& listHp, int Direction, int unitType) {
+    Unit unit(Direction, unitType, Texture);
     if (unitType == 1) {
-        Sprite sprite(Texture);
         if (Direction == 1) {
-            sprite.setOrigin(Vector2f(frameResolution, 0 ));
-            sprite.setPosition(Vector2f(320, 865));
+            unit.sprite.setOrigin(Vector2f(frameResolution, 0 ));
+            unit.sprite.setPosition(Vector2f(320, 865));
         }
         else {
-            sprite.setPosition(Vector2f(1600, 865));
+            unit.sprite.setPosition(Vector2f(1600, 865));
         }
-        sprite.setTextureRect(IntRect({ 0 * frameResolution,0 }, { frameResolution,frameResolution }));
-        listS.push_back(move(sprite));
-        listU.push_back(Unit(Direction, unitType));
+        unit.sprite.setTextureRect(IntRect({ 0 * frameResolution,0 }, { frameResolution,frameResolution }));
+        listU.push_back(unit);
     }
     else if (unitType == 2) {
-        Sprite sprite(Texture);
         if (Direction == 1) {
-            sprite.setOrigin(Vector2f(frameResolution, 0));
-            sprite.setPosition(Vector2f(320, 865));
+            unit.sprite.setOrigin(Vector2f(frameResolution, 0));
+            unit.sprite.setPosition(Vector2f(320, 865));
         }
         else {
-            sprite.setPosition(Vector2f(1600, 865));
+            unit.sprite.setPosition(Vector2f(1600, 865));
         }
-        sprite.setTextureRect(IntRect({ 0 * frameResolution,0 }, { frameResolution,frameResolution }));
-        listS.push_back(move(sprite));
-        listU.push_back(Unit(Direction, unitType));
+        unit.sprite.setTextureRect(IntRect({ 0 * frameResolution,0 }, { frameResolution,frameResolution }));
+        listU.push_back(unit);
     }
     else if (unitType == 3) {
-        Sprite sprite(Texture);
         if (Direction == 1) {
-            sprite.setOrigin(Vector2f(frameResolution, 0));
-            sprite.setPosition(Vector2f(320, 865));
+            unit.sprite.setOrigin(Vector2f(frameResolution, 0));
+            unit.sprite.setPosition(Vector2f(320, 865));
         }
         else {
-            sprite.setPosition(Vector2f(1600, 865));
+            unit.sprite.setPosition(Vector2f(1600, 865));
         }
-        sprite.setTextureRect(IntRect({ 2 * frameResolution,0 }, { frameResolution,frameResolution }));
-        listS.push_back(move(sprite));
-        listU.push_back(Unit(Direction, unitType));
+        unit.sprite.setTextureRect(IntRect({ 2 * frameResolution,0 }, { frameResolution,frameResolution }));
+        listU.push_back(unit);
     }
     RectangleShape hpBar({ 44,5 });
     hpBar.setFillColor(Color::Red);
     listHp.push_back(move(hpBar));
 }
 
-void attack(Sprite& objectS, Unit& objectU, Unit& attacked, vector<Sprite>& listB, Texture& ArrowTexture) {
+void attack(Unit& objectU, Unit& attacked, vector<Sprite>& listB, Texture& ArrowTexture) {
     if (objectU.currentState != 2) {
         objectU.Xindex = 0;
     }
     objectU.currentState = 2;
     if (objectU.unitType == 3) { 
-         objectS.setTextureRect(IntRect({ objectU.Xindex * frameResolution,frameResolution * 4 }, { frameResolution,frameResolution }));
+         objectU.sprite.setTextureRect(IntRect({ objectU.Xindex * frameResolution,frameResolution * 4 }, { frameResolution,frameResolution }));
     }
     else {
-         objectS.setTextureRect(IntRect({ objectU.Xindex * frameResolution,frameResolution * 2 }, { frameResolution,frameResolution }));
+         objectU.sprite.setTextureRect(IntRect({ objectU.Xindex * frameResolution,frameResolution * 2 }, { frameResolution,frameResolution }));
          if (objectU.Xindex == 0) {
              if (objectU.unitType == 1) {
                 swordSound.play();
@@ -153,10 +149,10 @@ void attack(Sprite& objectS, Unit& objectU, Unit& attacked, vector<Sprite>& list
                 objectU.Xindex = 0;
                 Sprite sprite(ArrowTexture);
 				if (objectU.unitDierction == 1) {
-                    sprite.setPosition(objectS.getPosition() + Vector2f(-128, 64));
+                    sprite.setPosition(objectU.sprite.getPosition() + Vector2f(-128, 64));
 				}
                 else {
-                    sprite.setPosition(objectS.getPosition() + Vector2f(64, 64));
+                    sprite.setPosition(objectU.sprite.getPosition() + Vector2f(64, 64));
 
                 }
                 sprite.setTextureRect(IntRect({ 0,0 }, { 64,64 }));
@@ -169,16 +165,16 @@ void attack(Sprite& objectS, Unit& objectU, Unit& attacked, vector<Sprite>& list
 
 }
 
-void attackBase(Sprite& objectS, Unit& objectU, int& Basehp, vector<Sprite> listB, Texture ArrowTexture) {
+void attackBase(Unit& objectU, int& Basehp, vector<Sprite> listB, Texture ArrowTexture) {
     if (objectU.currentState != 2) {
         objectU.Xindex = 0;
     }
     objectU.currentState = 2;
     if (objectU.unitType == 3) { 
-            objectS.setTextureRect(IntRect({ objectU.Xindex * frameResolution,frameResolution * 4 }, { frameResolution,frameResolution }));
+            objectU.sprite.setTextureRect(IntRect({ objectU.Xindex * frameResolution,frameResolution * 4 }, { frameResolution,frameResolution }));
     }
     else {
-           objectS.setTextureRect(IntRect({ objectU.Xindex * frameResolution,frameResolution * 2 }, { frameResolution,frameResolution }));
+           objectU.sprite.setTextureRect(IntRect({ objectU.Xindex * frameResolution,frameResolution * 2 }, { frameResolution,frameResolution }));
            if (objectU.Xindex == 0) {
                if (objectU.unitType == 1) {
                    swordSound.play();
@@ -202,7 +198,7 @@ void attackBase(Sprite& objectS, Unit& objectU, int& Basehp, vector<Sprite> list
             if (objectU.Xindex >= objectU.animationFrames + 2) {
                 objectU.Xindex = 0;
                 Sprite sprite(ArrowTexture);
-                sprite.setPosition(objectS.getPosition() + Vector2f(64, 64));
+                sprite.setPosition(objectU.sprite.getPosition() + Vector2f(64, 64));
                 sprite.setTextureRect(IntRect({ 0 * 64,0 }, { 64,64 }));
                 listB.push_back(move(sprite));
 
@@ -212,12 +208,12 @@ void attackBase(Sprite& objectS, Unit& objectU, int& Basehp, vector<Sprite> list
     }
 }
 
-void idle(Sprite& objectS, Unit& objectU) {
+void idle(Unit& objectU) {
     if (objectU.currentState != 0) {
          objectU.Xindex = 0;
     }
     objectU.currentState = 0;
-    objectS.setTextureRect(IntRect({ objectU.Xindex * frameResolution,0 }, { frameResolution,frameResolution }));
+    objectU.sprite.setTextureRect(IntRect({ objectU.Xindex * frameResolution,0 }, { frameResolution,frameResolution }));
     objectU.animationLatency += 1;
     if (objectU.animationLatency == animationLatencyLimit) {
         objectU.Xindex += 1;
@@ -235,9 +231,9 @@ void arrowRain(vector<Sprite>& listB, int i) {
     listB.push_back(move(sprite));
 }
 
-bool isColliding(Sprite& object1S, Sprite& object2S, int direction) {
-    FloatRect border1 = object1S.getGlobalBounds();
-    FloatRect border2 = object2S.getGlobalBounds();
+bool isColliding(Unit& object1, Unit& object2, int direction) {
+    FloatRect border1 = object1.sprite.getGlobalBounds();
+    FloatRect border2 = object2.sprite.getGlobalBounds();
     if (direction == 1) {
         if (border1.position.x + border1.size.x - border2.position.x >= 142) {
             return 1;
@@ -257,9 +253,9 @@ bool isColliding(Sprite& object1S, Sprite& object2S, int direction) {
 
 }
 
-bool isAttacking(Sprite& object1S, Sprite& object2S, Unit& object1U, Unit& object2U) {
-    if (object1U.unitDierction == 1) {
-        if (object1S.getPosition().x - object2S.getPosition().x >= -1 * object1U.range) {
+bool isAttacking(Unit& object1, Unit& object2) {
+    if (object1.unitDierction == 1) {
+        if (object1.sprite.getPosition().x - object2.sprite.getPosition().x >= -1 * object1.range) {
             return 1;
         }
         else {
@@ -267,7 +263,7 @@ bool isAttacking(Sprite& object1S, Sprite& object2S, Unit& object1U, Unit& objec
         }
     }
     else {
-        if (object1S.getPosition().x - object2S.getPosition().x <= object1U.range) {
+        if (object1.sprite.getPosition().x - object2.sprite.getPosition().x <= object1.range) {
             return 1;
         }
         else {
