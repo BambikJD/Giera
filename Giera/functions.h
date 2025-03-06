@@ -6,6 +6,8 @@
 using namespace sf;
 using namespace std;
 
+extern string AnimationAllyLink1;
+
 class Unit {
 public:
     int animationLatency = 0;
@@ -18,17 +20,19 @@ public:
     int range = 0;
     int currentState = 0;
     int unitMaxHp = 0;
-
-    Unit(int Direction, int Type);
+	Texture texture = Texture(AnimationAllyLink1);
+	Sprite sprite = Sprite(texture);
+  
+    Unit(int Direction, int Type, Texture& textureNew);
 };
 
-// Funkcje do obs≥ugi gry
+// Funkcje do obs≈Çugi gry
 void endMenu(RenderWindow& window, Text& endScreen, Text& endScoreText, Text& pressEscape);
-void move(Sprite& objectS, Unit& objectU, int direc);
-void addUnit(vector<Sprite>& listS, vector<Unit>& listU, Texture& Texture, vector<RectangleShape>& listHp, int Direction, int unitType);
-void attack(Sprite& objectS, Unit& objectU, Unit& attacked, vector<Sprite>& listB, Texture& ArrowTexture);
-void attackBase(Sprite& objectS, Unit& objectU, int& Basehp, vector<Sprite> listB, Texture ArrowTexture);
-void idle(Sprite& objectS, Unit& objectU);
-void arrowRain(vector<Sprite>& listb, int i);
-bool isColliding(Sprite& object1S, Sprite& object2S, int direction);
-bool isAttacking(Sprite& object1S, Sprite& object2S, Unit& object1U, Unit& object2U);
+void move(Unit& objectU, int direc);
+void addUnit(vector<Unit>& listU, Texture& Texture, vector<RectangleShape>& listHp, int Direction, int unitType);
+void attack(Unit& objectU, Unit& attacked, vector<Sprite>& listB, Texture& ArrowTexture);
+void attackBase(Unit& objectU, int& Basehp, vector<Sprite> listB, Texture ArrowTexture);
+void idle(Unit& objectU);
+void arrowRain(vector<Sprite>& listB, int i);
+bool isColliding(Unit& object1, Unit& object2, int direction);
+bool isAttacking(Unit& object1, Unit& object2);
